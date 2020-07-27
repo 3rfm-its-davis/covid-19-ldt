@@ -1,0 +1,218 @@
+Model run using Apollo for R, version 0.1.0 
+www.ApolloChoiceModelling.com
+
+Model name                       : mnl
+Model description                : MNL with Factor Analysis
+Model run at                     : 2020-07-27 08:18:53
+Estimation method                : bfgs
+Model diagnosis                  : successful convergence 
+Number of individuals            : 4739
+Number of observations           : 4739
+
+Number of cores used             :  1 
+Model without mixing
+
+LL(start)                        : -5206.324
+LL(0)                            : -5206.324
+LL(final)                        : -2831.296
+Rho-square (0)                   :  0.4562 
+Adj.Rho-square (0)               :  0.4541 
+AIC                              :  5684.59 
+BIC                              :  5755.69 
+Estimated parameters             :  11
+Time taken (hh:mm:ss)            :  00:00:19.03 
+Iterations                       :  19 
+Min abs eigenvalue of hessian    :  0 
+
+Estimates:
+                      Estimate  Std.err. t.ratio(0) Rob.std.err. Rob.t.ratio(0)
+asc_smlr               -0.7155 3521.6133          0      90.3715          -0.01
+asc_same                1.3630 4764.7407          0     130.2238           0.01
+asc_grtr               -0.6475 5929.1189          0     174.8027           0.00
+b_City_Midwest_smlr    -0.3747       NaN        NaN      36.9464          -0.01
+b_City_Northeast_smlr   0.0430       NaN        NaN      36.9533           0.00
+b_City_South_smlr      -0.1213       NaN        NaN      36.9304           0.00
+b_City_West_smlr       -0.2625       NaN        NaN      36.9687          -0.01
+b_City_Midwest_grtr    -0.4426  366.6869          0      43.6023          -0.01
+b_City_Northeast_grtr  -0.0839  366.6869          0      43.5588           0.00
+b_City_South_grtr      -0.0663  366.6869          0      43.5977           0.00
+b_City_West_grtr       -0.0547  366.6869          0      43.6039           0.00
+
+Overview of choices for model component "MNL"
+                                    smlr    same    grtr
+Times available                  4739.00 4739.00 4739.00
+Times chosen                      404.00 3879.00  456.00
+Percentage chosen overall           8.53   81.85    9.62
+Percentage chosen when available    8.53   81.85    9.62
+
+WARNING: Availability not provided to 'apollo_mnl' (or some elements are NA).
+         Full availability assumed.
+
+
+Classical covariance matrix:
+                                   asc_smlr              asc_same              asc_grtr   b_City_Midwest_smlr b_City_Northeast_smlr
+asc_smlr                           12401760              18010241              23979544             5608481.1             5608481.1
+asc_same                           18010241              22702754              28861373             4692512.5             4692512.4
+asc_grtr                           23979544              28861373              35154451             4881828.4             4881828.3
+b_City_Midwest_smlr                 5608481               4692512               4881828             -915968.7             -915968.7
+b_City_Northeast_smlr               5608481               4692512               4881828             -915968.7             -915968.7
+b_City_South_smlr                   5608481               4692512               4881828             -915968.7             -915968.7
+b_City_West_smlr                    5608481               4692512               4881828             -915968.7             -915968.7
+b_City_Midwest_grtr                -5969303              -6158619              -6293078             -189315.9             -189315.9
+b_City_Northeast_grtr              -5969303              -6158619              -6293078             -189315.9             -189315.9
+b_City_South_grtr                  -5969303              -6158619              -6293078             -189315.9             -189315.9
+b_City_West_grtr                   -5969303              -6158619              -6293078             -189315.9             -189315.9
+                          b_City_South_smlr      b_City_West_smlr   b_City_Midwest_grtr b_City_Northeast_grtr     b_City_South_grtr
+asc_smlr                          5608481.1             5608481.1            -5969303.2            -5969303.2            -5969303.2
+asc_same                          4692512.5             4692512.5            -6158619.1            -6158619.1            -6158619.1
+asc_grtr                          4881828.4             4881828.4            -6293078.4            -6293078.4            -6293078.3
+b_City_Midwest_smlr               -915968.7             -915968.7             -189315.9             -189315.9             -189315.9
+b_City_Northeast_smlr             -915968.7             -915968.7             -189315.9             -189315.9             -189315.9
+b_City_South_smlr                 -915968.7             -915968.7             -189315.9             -189315.9             -189315.9
+b_City_West_smlr                  -915968.7             -915968.7             -189315.9             -189315.9             -189315.9
+b_City_Midwest_grtr               -189315.9             -189315.9              134459.3              134459.3              134459.3
+b_City_Northeast_grtr             -189315.9             -189315.9              134459.3              134459.3              134459.3
+b_City_South_grtr                 -189315.9             -189315.9              134459.3              134459.3              134459.3
+b_City_West_grtr                  -189315.9             -189315.9              134459.3              134459.3              134459.3
+                           b_City_West_grtr
+asc_smlr                         -5969303.3
+asc_same                         -6158619.2
+asc_grtr                         -6293078.4
+b_City_Midwest_smlr               -189315.9
+b_City_Northeast_smlr             -189315.9
+b_City_South_smlr                 -189315.9
+b_City_West_smlr                  -189315.9
+b_City_Midwest_grtr                134459.3
+b_City_Northeast_grtr              134459.3
+b_City_South_grtr                  134459.3
+b_City_West_grtr                   134459.3
+
+Robust covariance matrix:
+                                   asc_smlr              asc_same              asc_grtr   b_City_Midwest_smlr b_City_Northeast_smlr
+asc_smlr                           8167.014             11858.013             16137.881              3690.981              3690.981
+asc_same                          11895.006             16958.248             22862.404              5063.225              5063.214
+asc_grtr                          16116.408             22775.432             30555.981              6659.007              6658.993
+b_City_Midwest_smlr                3691.822              5056.841              6670.480              1365.036              1365.009
+b_City_Northeast_smlr              3693.989              5059.536              6673.875              1365.547              1365.547
+b_City_South_smlr                  3687.052              5050.892              6663.150              1363.841              1363.830
+b_City_West_smlr                   3697.172              5063.852              6679.598              1366.680              1366.669
+b_City_Midwest_grtr               -4287.641             -5902.852             -7803.995             -1615.211             -1615.209
+b_City_Northeast_grtr             -4273.591             -5885.945             -7783.303             -1612.356             -1612.351
+b_City_South_grtr                 -4287.037             -5901.771             -7802.531             -1614.735             -1614.732
+b_City_West_grtr                  -4288.767             -5904.328             -7805.618             -1615.563             -1615.560
+                          b_City_South_smlr      b_City_West_smlr   b_City_Midwest_grtr b_City_Northeast_grtr     b_City_South_grtr
+asc_smlr                           3690.998              3690.972             -4279.912             -4279.910             -4279.862
+asc_same                           5063.238              5063.213             -5904.194             -5904.199             -5904.140
+asc_grtr                           6659.019              6658.993             -7780.588             -7780.593             -7780.524
+b_City_Midwest_smlr                1365.016              1365.017             -1613.632             -1613.640             -1613.629
+b_City_Northeast_smlr              1365.544              1365.545             -1614.333             -1614.339             -1614.329
+b_City_South_smlr                  1363.851              1363.839             -1612.252             -1612.259             -1612.246
+b_City_West_smlr                   1366.677              1366.685             -1615.740             -1615.747             -1615.736
+b_City_Midwest_grtr               -1615.212             -1615.210              1901.160              1901.144              1901.134
+b_City_Northeast_grtr             -1612.355             -1612.353              1897.359              1897.371              1897.349
+b_City_South_grtr                 -1614.733             -1614.733              1900.761              1900.761              1900.763
+b_City_West_grtr                  -1615.562             -1615.559              1901.292              1901.292              1901.282
+                           b_City_West_grtr
+asc_smlr                          -4279.959
+asc_same                          -5904.247
+asc_grtr                          -7780.645
+b_City_Midwest_smlr               -1613.639
+b_City_Northeast_smlr             -1614.339
+b_City_South_smlr                 -1612.258
+b_City_West_smlr                  -1615.745
+b_City_Midwest_grtr                1901.148
+b_City_Northeast_grtr              1897.363
+b_City_South_grtr                  1900.765
+b_City_West_grtr                   1901.301
+
+Classical correlation matrix:
+                                   asc_smlr              asc_same              asc_grtr   b_City_Midwest_smlr b_City_Northeast_smlr
+asc_smlr                             1.0000                1.0733                1.1484                   NaN                   NaN
+asc_same                             1.0733                1.0000                1.0216                   NaN                   NaN
+asc_grtr                             1.1484                1.0216                1.0000                   NaN                   NaN
+b_City_Midwest_smlr                     NaN                   NaN                   NaN                   NaN                   NaN
+b_City_Northeast_smlr                   NaN                   NaN                   NaN                   NaN                   NaN
+b_City_South_smlr                       NaN                   NaN                   NaN                   NaN                   NaN
+b_City_West_smlr                        NaN                   NaN                   NaN                   NaN                   NaN
+b_City_Midwest_grtr                 -4.6226               -3.5249               -2.8945                   NaN                   NaN
+b_City_Northeast_grtr               -4.6226               -3.5249               -2.8945                   NaN                   NaN
+b_City_South_grtr                   -4.6226               -3.5249               -2.8945                   NaN                   NaN
+b_City_West_grtr                    -4.6226               -3.5249               -2.8945                   NaN                   NaN
+                          b_City_South_smlr      b_City_West_smlr   b_City_Midwest_grtr b_City_Northeast_grtr     b_City_South_grtr
+asc_smlr                                NaN                   NaN               -4.6226               -4.6226               -4.6226
+asc_same                                NaN                   NaN               -3.5249               -3.5249               -3.5249
+asc_grtr                                NaN                   NaN               -2.8945               -2.8945               -2.8945
+b_City_Midwest_smlr                     NaN                   NaN                   NaN                   NaN                   NaN
+b_City_Northeast_smlr                   NaN                   NaN                   NaN                   NaN                   NaN
+b_City_South_smlr                       NaN                   NaN                   NaN                   NaN                   NaN
+b_City_West_smlr                        NaN                   NaN                   NaN                   NaN                   NaN
+b_City_Midwest_grtr                     NaN                   NaN                1.0000                1.0000                1.0000
+b_City_Northeast_grtr                   NaN                   NaN                1.0000                1.0000                1.0000
+b_City_South_grtr                       NaN                   NaN                1.0000                1.0000                1.0000
+b_City_West_grtr                        NaN                   NaN                1.0000                1.0000                1.0000
+                           b_City_West_grtr
+asc_smlr                            -4.6226
+asc_same                            -3.5249
+asc_grtr                            -2.8945
+b_City_Midwest_smlr                     NaN
+b_City_Northeast_smlr                   NaN
+b_City_South_smlr                       NaN
+b_City_West_smlr                        NaN
+b_City_Midwest_grtr                  1.0000
+b_City_Northeast_grtr                1.0000
+b_City_South_grtr                    1.0000
+b_City_West_grtr                     1.0000
+
+Robust correlation matrix:
+                                   asc_smlr              asc_same              asc_grtr   b_City_Midwest_smlr b_City_Northeast_smlr
+asc_smlr                             1.0000                1.0076                1.0216                1.1054                1.1052
+asc_same                             1.0107                1.0000                1.0043                1.0524                1.0522
+asc_grtr                             1.0202                1.0005                1.0000                1.0311                1.0309
+b_City_Midwest_smlr                  1.1057                1.0510                1.0328                1.0000                0.9998
+b_City_Northeast_smlr                1.1061                1.0514                1.0332                1.0002                1.0000
+b_City_South_smlr                    1.1048                1.0503                1.0322                0.9996                0.9994
+b_City_West_smlr                     1.1066                1.0519                1.0336                1.0006                1.0004
+b_City_Midwest_grtr                 -1.0881               -1.0396               -1.0239               -1.0026               -1.0025
+b_City_Northeast_grtr               -1.0856               -1.0376               -1.0222               -1.0019               -1.0017
+b_City_South_grtr                   -1.0881               -1.0395               -1.0238               -1.0025               -1.0023
+b_City_West_grtr                    -1.0884               -1.0398               -1.0241               -1.0028               -1.0026
+                          b_City_South_smlr      b_City_West_smlr   b_City_Midwest_grtr b_City_Northeast_grtr     b_City_South_grtr
+asc_smlr                             1.1059                1.1048               -1.0862               -1.0872               -1.0863
+asc_same                             1.0528                1.0517               -1.0398               -1.0409               -1.0399
+asc_grtr                             1.0315                1.0304               -1.0208               -1.0219               -1.0209
+b_City_Midwest_smlr                  1.0004                0.9994               -1.0017               -1.0027               -1.0018
+b_City_Northeast_smlr                1.0006                0.9996               -1.0019               -1.0029               -1.0020
+b_City_South_smlr                    1.0000                0.9990               -1.0012               -1.0022               -1.0013
+b_City_West_smlr                     1.0010                1.0000               -1.0024               -1.0034               -1.0025
+b_City_Midwest_grtr                 -1.0031               -1.0020                1.0000                1.0010                1.0001
+b_City_Northeast_grtr               -1.0023               -1.0013                0.9990                1.0000                0.9991
+b_City_South_grtr                   -1.0029               -1.0018                0.9999                1.0009                1.0000
+b_City_West_grtr                    -1.0033               -1.0022                1.0000                1.0010                1.0001
+                           b_City_West_grtr
+asc_smlr                            -1.0861
+asc_same                            -1.0398
+asc_grtr                            -1.0208
+b_City_Midwest_smlr                 -1.0016
+b_City_Northeast_smlr               -1.0019
+b_City_South_smlr                   -1.0012
+b_City_West_smlr                    -1.0023
+b_City_Midwest_grtr                  1.0000
+b_City_Northeast_grtr                0.9990
+b_City_South_grtr                    0.9999
+b_City_West_grtr                     1.0000
+
+ 20 worst outliers in terms of lowest average per choice prediction:
+
+Changes in parameter estimates from starting values:
+                      Initial Estimate Difference
+asc_smlr                    0  -0.7155    -0.7155
+asc_same                    0   1.3630     1.3630
+asc_grtr                    0  -0.6475    -0.6475
+b_City_Midwest_smlr         0  -0.3747    -0.3747
+b_City_Northeast_smlr       0   0.0430     0.0430
+b_City_South_smlr           0  -0.1213    -0.1213
+b_City_West_smlr            0  -0.2625    -0.2625
+b_City_Midwest_grtr         0  -0.4426    -0.4426
+b_City_Northeast_grtr       0  -0.0839    -0.0839
+b_City_South_grtr           0  -0.0663    -0.0663
+b_City_West_grtr            0  -0.0547    -0.0547
