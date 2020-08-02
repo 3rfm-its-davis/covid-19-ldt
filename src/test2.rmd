@@ -94,21 +94,23 @@ ggplot(data) + geom_vline(xintercept = 0, alpha = 0.3) + geom_histogram(aes(diff
 ```
 
 ```{r fig.width=16, fig.height=9}
-before = importData("covidV2") %>% selectColumns(c("ResponseId","C11.1_1_1","C11.1_1_2","C11.1_1_3","C11.1_2_1","C11.1_2_2","C11.1_2_3", "H07_1")) %>% na.exclude()
-after = importData("covidV2") %>% selectColumns(c("ResponseId","C11.2_1_1","C11.2_1_2","C11.2_1_3","C11.2_2_1","C11.2_2_2","C11.2_2_3", "H07_1")) %>% na.exclude()
-joined = inner_join(before,after,c("ResponseId" = "ResponseId")) %>% select(-ResponseId)
-data = data.frame(key = rep(1:6,each = dim(joined)[1]) %>% as.character)
-for (i in 0:5) {
-  data[(i*dim(joined)[1]+1):((i+1)*dim(joined)[1]),2:4] = joined[,c(1+i,8+i,7)]
-}
-colnames(data)[2:4] = c("before", "after", "H07_1")
-data = data %>%
-  mutate(before = as.numeric(before), after = as.numeric(after)) %>%
-  filter(before <= 100 & after <= 17 & before >= 0 & after >= 0 & (before > 0 | after > 0)) %>%
-  mutate(diff = after*6 - before)
-ggplot(data, aes(x = diff)) + geom_vline(xintercept = 0, alpha = 0.3) +
+before = importData("covidV2")
+before %>% selectColumns(c("ResponseId", "C11.1_1_1", "C11.1_1_2", "C11.1_1_3", "C11.2_1_1", "C11.2_1_2", "C11.2_1_3", "I05")) %>% na.exclude() %>%
+  filter(C11.1_1_1 <= 100 & C11.1_1_1 >= 0) %>%
+  filter(C11.1_1_2 <= 100 & C11.1_1_2 >= 0) %>%
+  filter(C11.1_1_3 <= 100 & C11.1_1_3 >= 0) %>%
+  filter(C11.2_1_1 <= 100 & C11.2_1_1 >= 0) %>%
+  filter(C11.2_1_2 <= 100 & C11.2_1_2 >= 0) %>%
+  filter(C11.2_1_3 <= 100 & C11.2_1_3 >= 0) %>%
+  mutate(total2019 = C11.1_1_1 + C11.1_1_2 + C11.1_1_3) %>%
+  mutate(total2020 = C11.2_1_1 + C11.2_1_2 + C11.2_1_3) %>%
+  filter(!(total2019 == 0 & total2020 == 0)) %>%
+  group_by(I05) %>%
+  summarize(med2019 = median(total2019), mea2019 = mean(total2019), sd2019 = sd(total2019), freq2019 = which(total2019 == 0) %>% length / length(total2019),
+            med2020 = median(total2020), mea2020 = mean(total2020), sd2020 = sd(total2020), freq2020 = which(total2020 == 0) %>% length / length(total2020))
+ggplot(before, aes(x = before)) +
   geom_histogram(aes(y = 5*..density.., fill = key), alpha = 0.7, binwidth = 5) +
-  facet_grid(H07_1~key)
+  facet_grid(I05~key)
 ```
 
 ```{r fig.width=16, fig.height=9}

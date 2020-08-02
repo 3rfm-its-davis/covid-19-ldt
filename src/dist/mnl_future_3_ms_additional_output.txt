@@ -1,0 +1,3 @@
+
+> if (sink.number() > 0)
++   sink()

@@ -30,7 +30,8 @@ nameBase = c(
 )
 
 raw = importData("covidV2") %>%
-  filter(City != "Vancouver" & City != "Toronto")
+  filter(City != "Vancouver" & City != "Toronto") %>%
+  filter(C04_1 == 1 | C04_2 == 1 | C04_3 == 1 | C04_8 == 1 | C04_9 == 1)
 ```
 
 ```{r fig.width=12, fig.height=8}
@@ -64,25 +65,43 @@ colnames(joinedRaw) = c(
   paste(nameBase, "_during", sep = "")
 )
 
+ids = joinedRaw$ResponseId
+
+joinedRaw[joinedRaw < 0] = NA
+joinedRaw[joinedRaw > 100] = NA
+joinedRaw = joinedRaw %>% mutate(ResponseId = ids)
+
 joinedRaw %>%
   gather(key,value, -"ResponseId") %>%
-  filter(value >=0 & value < 100) %>%
   ggplot() + geom_histogram(aes(x = value), binwidth = 1) +
   facet_wrap(~key)
 
-joined = joinedRaw[,"ResponseId"]
+joinedRaw = joinedRaw %>% rowwise(ResponseId) %>% mutate(
+  biz_all_before = sum(biz_car_before, biz_air_before, biz_oth_before),
+  biz_all_during = sum(biz_car_during, biz_air_during, biz_oth_during)
+) %>% as.data.frame()
 
-for (name in nameBase) {
-  num = joinedRaw[, c(paste(name, "_before", sep = ""), paste(name, "_during", sep = ""))]
-  num[num[,1] < 0 | num[,1] > 100, 1] = NaN
-  num[num[,2] < 0 | num[,2] > 17, 2] = NaN
-  num[, name] = ifelse(num[,2] > round(num[,1] / 6), "greater", ifelse(num[,2] < round(num[,1] / 6), "smaller", "same")) %>%
-    factor(levels = c("smaller","same", "greater"))
-  # num[,paste(name, "_isUser", sep = "")] = rowSums(num[,1:2]) > 0
-  joined = cbind(joined,num[,3])
+joined = data.frame(joinedRaw[,"ResponseId"])
+
+for (name in c(nameBase, "biz_all")) {
+  num = joinedRaw[, c(paste(name, "_before", sep = ""),
+                      paste(name, "_during", sep = ""))]
+  colnames(num) = c("before", "during")
+  num[,paste(name, "_isUser", sep = "")] = rowSums(num[,1:2]) > 0
+  joined = cbind(joined,
+                 num %>% mutate(
+                   !!name := case_when(
+                     before == 0 & during == 0 ~ "zero",
+                     (before / 6 - during) > 0.5 ~ "smaller",
+                     abs(before / 6 - during) <= 0.5  ~ "same",
+                     (before / 6 - during) < -0.5 ~ "greater",
+                     T ~ ""
+                   )
+                 ) %>%
+                   .[,name] %>% factor(levels = c("smaller", "same", "greater")))
+                   # .[,name] %>% factor(levels = c("zero", "smaller", "same", "greater")))
 }
-joined = joined %>% as.data.frame()
-colnames(joined) = c("ResponseId", nameBase)
+colnames(joined) = c("ResponseId", c(nameBase, "biz_all"))
 ```
 
 no change
@@ -90,31 +109,37 @@ higher in 2019
 higehr in 2020
 
 ```{r fig.width=16, fig.height=24}
-socio = raw %>% selectColumns(c("ResponseId","City", "D01", "D09_2", "D09_7", "H03_1", "I01_1", "I04_4", "I05", "I09_USD", "I07")) %>% 
-  mutate(H03_1 = ifelse(H03_1 == "", 0, H03_1) %>% as.numeric()) %>%
+socio = raw %>% selectColumns(c("ResponseId", "City", "B02_5", "D01", "D09_2", "C07", "C12_3", "C12_13", "I01_1", "I04_4", "I05", "I09_USD", "I07", "I12", "C11.1_1_1", "C11.1_1_2", "C11.1_1_3")) %>% 
   mutate(Age = cut(I01_1, c(1920, 1965, 1980, 1995, 2010), labels = c("(1920-1965]","(1965-1980]","(1980-1995]","(1995-2010]"))) %>%
-  mutate(Gen = case_when(I05 > 1 ~ "Non-Female", T ~ "Female")) %>%
-  mutate(Edc = case_when(I07 > 3 ~ ">Bachelor", T ~ "<=Bachelor")) %>%
-  mutate(Chl = case_when(D09_2 > 0 ~ "Yes", T ~ "No")) %>%
-  mutate(Inc = case_when(I09_USD < 3 ~ "<25,000", I09_USD > 4 ~ ">=100,000", T ~ "50,000-99,999")) %>%
-  mutate(Rac = case_when(I04_4 == 1 ~ "White", T ~ "Other")) %>%
-  mutate(Vpp = case_when(D09_7 > H03_1 ~ "Sufficient", T ~ "Deficient")) %>%
-  mutate(Ngh = case_when(D01 == 1 ~ "Urban", T ~ "Non-Urban")) %>%
+  mutate(Gen = case_when(I05 == 2 ~ "Male", I05 != 2 ~ "Non-Male")) %>%
+  mutate(Edc = case_when(I07 > 3 ~ ">=Bachelor", I07 < 4 ~ "<Bachelor")) %>%
+  mutate(Chl = case_when(D09_2 > 0 ~ "Yes", D09_2 == 0 ~ "No")) %>%
+  mutate(Inc = case_when(I09_USD < 3 ~ "<50,000", I09_USD > 4 ~ ">=100,000", T ~ "50,000-99,999")) %>%
+  mutate(Rem = case_when(C07 == 0 ~ "No", C07 > 0 ~ "Yes")) %>%
+  mutate(Hel = C12_3 - 3) %>%
+  mutate(Vdc = C12_13 - 3) %>%
+  mutate(Rac = case_when(I04_4 == 1 ~ "White", I04_4 == 0 ~ "Other")) %>%
+  mutate(Ngh = case_when(D01 == 1 ~ "Urban", D01 > 1 ~ "Non-Urban")) %>%
+  mutate(T19 = C11.1_1_1 + C11.1_1_2 + C11.1_1_3) %>%
   mutate(City = case_when(City %in% c("LA", "SF", "Sacramento", "Seattle", "SD", "Denver", "SLC") ~ "West",
                           City %in% c("Kansas", "Detroit", "Chicago") ~ "Midwest",
                           City %in% c("Atlanta", "Tampa", "DC") ~ "South",
                           City %in% c("NYC", "Boston") ~ "Northeast")) %>%
-  mutate_at(c("City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac"), as.factor) %>%
-  mutate(Age = factor(Age, levels = rev(c("(1920-1965]","(1965-1980]","(1980-1995]","(1995-2010]")))) %>%
-  mutate(Inc = factor(Inc, levels = c("<25,000","50,000-99,999",">=100,000"))) %>%
+  mutate_at(c("City", "Age", "Inc", "Edc", "Rem", "Gen", "Ngh", "Rac"), as.factor) %>%
+  mutate(Age = factor(Age, levels = c("(1965-1980]","(1995-2010]","(1980-1995]","(1920-1965]"))) %>%
+  mutate(Inc = factor(Inc, levels = c("<50,000","50,000-99,999",">=100,000"))) %>%
   mutate(Rac = factor(Rac, levels = c("White","Other"))) %>%
+  mutate(Chl = factor(Chl, levels = c("No","Yes"))) %>%
+  mutate(Edc = factor(Edc, levels = c("<Bachelor",">=Bachelor"))) %>%
   mutate(Ngh = factor(Ngh, levels = c("Urban","Non-Urban"))) %>%
+  mutate(Gen = factor(Gen, levels = c("Male","Non-Male"))) %>%
+  mutate(Rem = factor(Rem, levels = c("No", "Yes"))) %>%
   mutate(City = factor(City, levels = c("West", "Midwest", "South", "Northeast"))) %>%
-  select(ResponseId, City, Age, Inc, Vpp, Edc, Gen, Ngh, Rac)
+  select(ResponseId, City, Age, Inc, Hel, Vdc, Rem, Edc, Chl, Gen, Ngh, Rac, T19)
 ```
 
 ```{r fig.width=8, fig.height=4.8}
-c("City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac") %>% map( ~ {
+c("City", "Age", "Inc", "Hel", "Edc", "Vdc", "Rem", "Chl", "Gen", "Ngh", "Rac") %>% map( ~ {
   data = socio %>%
     select(ResponseId, value = .x) %>%
     group_by(value) %>%
@@ -163,472 +188,11 @@ fut = raw %>% selectColumns(c("ResponseId", "C13_3")) %>%
 
 ```{r}
 database = inner_join(joined,socio) %>%
-  inner_join(attitudeA) %>%
-  inner_join(attitudeH) %>%
-  inner_join(future)
+  inner_join(fut)
 colnames(database)[1] = "ID"
 database$ID = 1:dim(database)[1]
-database = database %>% filter(!is.na(biz_car)) %>% mutate_at(
-  c("City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac"), as.numeric
-)
-```
-
-```{r}
-apollo_control <- list(
-  modelName = "mnl",
-  modelDescr = "MNL with Factor Analysis",
-  indivID = "ID"
-)
-
-choiceAnalysis_settings <- list(
-  alternatives = c(smlr = 1, same = 2, grtr = 3),
-  avail = 1,
-  choiceVar = database$biz_car,
-  explanators = database[, c(
-    "City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac",
-    "FA1A",
-    "FA2A",
-    "FA3A",
-    "FA4A",
-    "FA5A",
-    "FA6A",
-    "FA1H",
-    "FA2H",
-    "FA3H",
-    "FA4H"
-  )]
-)
-
-apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
-
-apollo_beta <- c(
-  asc_smlr = 0,
-  asc_grtr = 0,
-  b_FA1A_smlr = 0,
-  b_FA2A_smlr = 0,
-  b_FA3A_smlr = 0,
-  b_FA4A_smlr = 0,
-  b_FA5A_smlr = 0,
-  b_FA6A_smlr = 0,
-  b_FA1H_smlr = 0,
-  b_FA2H_smlr = 0,
-  b_FA3H_smlr = 0,
-  b_FA4H_smlr = 0,
-  b_City_Midwest_smlr = 0,
-  b_City_South_smlr = 0,
-  b_City_Northeast_smlr = 0,
-  b_Age_Millenials_smlr = 0,
-  b_Age_GenX_smlr = 0,
-  b_Age_Older_smlr = 0,
-  b_Inc_Mid_smlr = 0,
-  b_Inc_High_smlr = 0,
-  b_Vpp_Sufficient_smlr = 0,
-  b_Edc_MoreBachelor_smlr = 0,
-  b_Gen_NonFemale_smlr = 0,
-  b_Ngh_NonUrban_smlr = 0,
-  b_Rac_Other_smlr = 0,
-  b_FA1A_grtr = 0,
-  b_FA2A_grtr = 0,
-  b_FA3A_grtr = 0,
-  b_FA4A_grtr = 0,
-  b_FA5A_grtr = 0,
-  b_FA6A_grtr = 0,
-  b_FA1H_grtr = 0,
-  b_FA2H_grtr = 0,
-  b_FA3H_grtr = 0,
-  b_FA4H_grtr = 0,
-  b_City_Midwest_grtr = 0,
-  b_City_South_grtr = 0,
-  b_City_Northeast_grtr = 0,
-  b_Age_Millenials_grtr = 0,
-  b_Age_GenX_grtr = 0,
-  b_Age_Older_grtr = 0,
-  b_Inc_Mid_grtr = 0,
-  b_Inc_High_grtr = 0,
-  b_Vpp_Sufficient_grtr = 0,
-  b_Edc_MoreBachelor_grtr = 0,
-  b_Gen_NonFemale_grtr = 0,
-  b_Ngh_NonUrban_grtr = 0,
-  b_Rac_Other_grtr = 0
-)
-
-apollo_fixed <- c()
-
-apollo_inputs <- apollo_validateInputs()
-
-apollo_probabilities <- function(apollo_beta, apollo_inputs, functionality = "estimate") {
-  apollo_attach(apollo_beta, apollo_inputs)
-  on.exit(apollo_detach(apollo_beta, apollo_inputs))
-  
-  P <- list()
-  
-  V <- list()
-  V[["same"]] <- 0
-  V[["smlr"]] <- asc_smlr +
-    b_FA1A_smlr * FA1A +
-    b_FA2A_smlr * FA2A +
-    b_FA3A_smlr * FA3A +
-    b_FA4A_smlr * FA4A +
-    b_FA5A_smlr * FA5A +
-    b_FA6A_smlr * FA6A +
-    b_FA1H_smlr * FA1H +
-    b_FA2H_smlr * FA2H +
-    b_FA3H_smlr * FA3H +
-    b_FA4H_smlr * FA4H +
-    b_City_Midwest_smlr * (City == 2) +
-    b_City_South_smlr * (City == 3) +
-    b_City_Northeast_smlr * (City == 4)  +
-    b_Age_Millenials_smlr * (Age == 2) +
-    b_Age_GenX_smlr * (Age == 3) +
-    b_Age_Older_smlr * (Age == 4)  +
-    b_Inc_Mid_smlr * (Inc == 2)  +
-    b_Inc_High_smlr * (Inc == 3) +
-    b_Vpp_Sufficient_smlr * (Vpp == 2) +
-    b_Edc_MoreBachelor_smlr * (Edc == 2) +
-    b_Gen_NonFemale_smlr * (Gen == 2)  +
-    b_Ngh_NonUrban_smlr * (Ngh == 2) +
-    b_Rac_Other_smlr * (Rac == 2)
-  V[["grtr"]] <- asc_grtr +
-    b_FA1A_grtr * FA1A +
-    b_FA2A_grtr * FA2A +
-    b_FA3A_grtr * FA3A +
-    b_FA4A_grtr * FA4A +
-    b_FA5A_grtr * FA5A +
-    b_FA6A_grtr * FA6A +
-    b_FA1H_grtr * FA1H +
-    b_FA2H_grtr * FA2H +
-    b_FA3H_grtr * FA3H +
-    b_FA4H_grtr * FA4H +
-    b_City_Midwest_grtr * (City == 2) +
-    b_City_South_grtr * (City == 3) +
-    b_City_Northeast_grtr *(City == 4)  +
-    b_Age_Millenials_grtr * (Age == 2) +
-    b_Age_GenX_grtr * (Age == 3) +
-    b_Age_Older_grtr * (Age == 4)  +
-    b_Inc_Mid_grtr * (Inc == 2)  +
-    b_Inc_High_grtr * (Inc == 3) +
-    b_Vpp_Sufficient_grtr * (Vpp == 2) +
-    b_Edc_MoreBachelor_grtr * (Edc == 2) +
-    b_Gen_NonFemale_grtr * (Gen == 2)  +
-    b_Ngh_NonUrban_grtr * (Ngh == 2) +
-    b_Rac_Other_grtr * (Rac == 2)
-  
-  mnl_settings <- list(
-    alternatives = c(smlr = 1, same = 2, grtr = 3),
-    avail = 1,
-    choiceVar = biz_car,
-    V = V
-  )
-  
-  P[["model"]] <- apollo_mnl(mnl_settings, functionality)
-  
-  P <- apollo_prepareProb(P, apollo_inputs, functionality)
-  return(P)
-}
-
-model <- apollo_estimate(apollo_beta, apollo_fixed, apollo_probabilities, apollo_inputs)
-
-apollo_modelOutput(model)
-apollo_saveOutput(model)
-sink(paste(model$apollo_control$modelName, "_additional_output.txt", sep = ""), split = TRUE)
-if (sink.number() > 0) sink()
-```
-
-```{r}
-apollo_control <- list(
-  modelName = "mnl2",
-  modelDescr = "MNL with Factor Analysis",
-  indivID = "ID"
-)
-
-choiceAnalysis_settings <- list(
-  alternatives = c(smlr = 1, same = 2, grtr = 3),
-  avail = 1,
-  choiceVar = database$future,
-  explanators = database[, c(
-    "City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac",
-    "FA1A",
-    "FA2A",
-    "FA3A",
-    "FA4A",
-    "FA5A",
-    "FA6A",
-    "FA1H",
-    "FA2H",
-    "FA3H",
-    "FA4H"
-  )]
-)
-
-apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
-
-
-apollo_inputs <- apollo_validateInputs()
-
-apollo_probabilities <- function(apollo_beta, apollo_inputs, functionality = "estimate") {
-  apollo_attach(apollo_beta, apollo_inputs)
-  on.exit(apollo_detach(apollo_beta, apollo_inputs))
-  
-  P <- list()
-  
-  V <- list()
-  V[["same"]] <- 0
-  V[["smlr"]] <- asc_smlr +
-    b_FA1A_smlr * FA1A +
-    b_FA2A_smlr * FA2A +
-    b_FA3A_smlr * FA3A +
-    b_FA4A_smlr * FA4A +
-    b_FA5A_smlr * FA5A +
-    b_FA6A_smlr * FA6A +
-    b_FA1H_smlr * FA1H +
-    b_FA2H_smlr * FA2H +
-    b_FA3H_smlr * FA3H +
-    b_FA4H_smlr * FA4H +
-    b_City_Midwest_smlr * (City == 2) +
-    b_City_South_smlr * (City == 3) +
-    b_City_Northeast_smlr * (City == 4)  +
-    b_Age_Millenials_smlr * (Age == 2) +
-    b_Age_GenX_smlr * (Age == 3) +
-    b_Age_Older_smlr * (Age == 4)  +
-    b_Inc_Mid_smlr * (Inc == 2)  +
-    b_Inc_High_smlr * (Inc == 3) +
-    b_Vpp_Sufficient_smlr * (Vpp == 2) +
-    b_Edc_MoreBachelor_smlr * (Edc == 2) +
-    b_Gen_NonFemale_smlr * (Gen == 2)  +
-    b_Ngh_NonUrban_smlr * (Ngh == 2) +
-    b_Rac_Other_smlr * (Rac == 2)
-  V[["grtr"]] <- asc_grtr +
-    b_FA1A_grtr * FA1A +
-    b_FA2A_grtr * FA2A +
-    b_FA3A_grtr * FA3A +
-    b_FA4A_grtr * FA4A +
-    b_FA5A_grtr * FA5A +
-    b_FA6A_grtr * FA6A +
-    b_FA1H_grtr * FA1H +
-    b_FA2H_grtr * FA2H +
-    b_FA3H_grtr * FA3H +
-    b_FA4H_grtr * FA4H +
-    b_City_Midwest_grtr * (City == 2) +
-    b_City_South_grtr * (City == 3) +
-    b_City_Northeast_grtr *(City == 4)  +
-    b_Age_Millenials_grtr * (Age == 2) +
-    b_Age_GenX_grtr * (Age == 3) +
-    b_Age_Older_grtr * (Age == 4)  +
-    b_Inc_Mid_grtr * (Inc == 2)  +
-    b_Inc_High_grtr * (Inc == 3) +
-    b_Vpp_Sufficient_grtr * (Vpp == 2) +
-    b_Edc_MoreBachelor_grtr * (Edc == 2) +
-    b_Gen_NonFemale_grtr * (Gen == 2)  +
-    b_Ngh_NonUrban_grtr * (Ngh == 2) +
-    b_Rac_Other_grtr * (Rac == 2)
-  
-  mnl_settings <- list(
-    alternatives = c(smlr = 1, same = 2, grtr = 3),
-    avail = 1,
-    choiceVar = future,
-    V = V
-  )
-  
-  P[["model"]] <- apollo_mnl(mnl_settings, functionality)
-  
-  P <- apollo_prepareProb(P, apollo_inputs, functionality)
-  return(P)
-}
-
-model <- apollo_estimate(apollo_beta, apollo_fixed, apollo_probabilities, apollo_inputs)
-
-apollo_modelOutput(model)
-apollo_saveOutput(model)
-sink(paste(model$apollo_control$modelName, "_additional_output.txt", sep = ""), split = TRUE)
-if (sink.number() > 0) sink()
-```
-
-```{r}
-apollo_control <- list(
-  modelName = "mnl3",
-  modelDescr = "MNL with Factor Analysis",
-  indivID = "ID"
-)
-
-choiceAnalysis_settings <- list(
-  alternatives = c(smlr = 1, same = 2, grtr = 3),
-  avail = 1,
-  choiceVar = database$biz_car,
-  explanators = database[, c(
-    "City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac"
-  )]
-)
-
-apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
-
-apollo_beta <- c(
-  asc_smlr = 0,
-  asc_grtr = 0,
-  b_City_Midwest_smlr = 0,
-  b_City_South_smlr = 0,
-  b_City_Northeast_smlr = 0,
-  b_Age_Millenials_smlr = 0,
-  b_Age_GenX_smlr = 0,
-  b_Age_Older_smlr = 0,
-  b_Inc_Mid_smlr = 0,
-  b_Inc_High_smlr = 0,
-  b_Vpp_Sufficient_smlr = 0,
-  b_Edc_MoreBachelor_smlr = 0,
-  b_Gen_NonFemale_smlr = 0,
-  b_Ngh_NonUrban_smlr = 0,
-  b_Rac_Other_smlr = 0,
-  b_City_Midwest_grtr = 0,
-  b_City_South_grtr = 0,
-  b_City_Northeast_grtr = 0,
-  b_Age_Millenials_grtr = 0,
-  b_Age_GenX_grtr = 0,
-  b_Age_Older_grtr = 0,
-  b_Inc_Mid_grtr = 0,
-  b_Inc_High_grtr = 0,
-  b_Vpp_Sufficient_grtr = 0,
-  b_Edc_MoreBachelor_grtr = 0,
-  b_Gen_NonFemale_grtr = 0,
-  b_Ngh_NonUrban_grtr = 0,
-  b_Rac_Other_grtr = 0
-)
-
-apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
-
-apollo_inputs <- apollo_validateInputs()
-
-apollo_probabilities <- function(apollo_beta, apollo_inputs, functionality = "estimate") {
-  apollo_attach(apollo_beta, apollo_inputs)
-  on.exit(apollo_detach(apollo_beta, apollo_inputs))
-  
-  P <- list()
-  
-  V <- list()
-  V[["same"]] <- 0
-  V[["smlr"]] <- asc_smlr +
-    b_City_Midwest_smlr * (City == 2) +
-    b_City_South_smlr * (City == 3) +
-    b_City_Northeast_smlr * (City == 4)  +
-    b_Age_Millenials_smlr * (Age == 2) +
-    b_Age_GenX_smlr * (Age == 3) +
-    b_Age_Older_smlr * (Age == 4)  +
-    b_Inc_Mid_smlr * (Inc == 2)  +
-    b_Inc_High_smlr * (Inc == 3) +
-    b_Vpp_Sufficient_smlr * (Vpp == 2) +
-    b_Edc_MoreBachelor_smlr * (Edc == 2) +
-    b_Gen_NonFemale_smlr * (Gen == 2)  +
-    b_Ngh_NonUrban_smlr * (Ngh == 2) +
-    b_Rac_Other_smlr * (Rac == 2)
-  V[["grtr"]] <- asc_grtr +
-    b_City_Midwest_grtr * (City == 2) +
-    b_City_South_grtr * (City == 3) +
-    b_City_Northeast_grtr *(City == 4)  +
-    b_Age_Millenials_grtr * (Age == 2) +
-    b_Age_GenX_grtr * (Age == 3) +
-    b_Age_Older_grtr * (Age == 4)  +
-    b_Inc_Mid_grtr * (Inc == 2)  +
-    b_Inc_High_grtr * (Inc == 3) +
-    b_Vpp_Sufficient_grtr * (Vpp == 2) +
-    b_Edc_MoreBachelor_grtr * (Edc == 2) +
-    b_Gen_NonFemale_grtr * (Gen == 2)  +
-    b_Ngh_NonUrban_grtr * (Ngh == 2) +
-    b_Rac_Other_grtr * (Rac == 2)
-  
-  mnl_settings <- list(
-    alternatives = c(smlr = 1, same = 2, grtr = 3),
-    avail = 1,
-    choiceVar = biz_car,
-    V = V
-  )
-  
-  P[["model"]] <- apollo_mnl(mnl_settings, functionality)
-  
-  P <- apollo_prepareProb(P, apollo_inputs, functionality)
-  return(P)
-}
-
-model <- apollo_estimate(apollo_beta, apollo_fixed, apollo_probabilities, apollo_inputs)
-
-apollo_modelOutput(model)
-apollo_saveOutput(model)
-sink(paste(model$apollo_control$modelName, "_additional_output.txt", sep = ""), split = TRUE)
-if (sink.number() > 0) sink()
-```
-
-```{r}
-apollo_control <- list(
-  modelName = "mnl4",
-  modelDescr = "MNL with Factor Analysis",
-  indivID = "ID"
-)
-
-choiceAnalysis_settings <- list(
-  alternatives = c(smlr = 1, same = 2, grtr = 3),
-  avail = 1,
-  choiceVar = database$future,
-  explanators = database[, c(
-    "City", "Age", "Inc", "Vpp", "Edc", "Gen", "Ngh", "Rac"
-  )]
-)
-
-apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
-
-
-apollo_inputs <- apollo_validateInputs()
-
-apollo_probabilities <- function(apollo_beta, apollo_inputs, functionality = "estimate") {
-  apollo_attach(apollo_beta, apollo_inputs)
-  on.exit(apollo_detach(apollo_beta, apollo_inputs))
-  
-  P <- list()
-  
-  V <- list()
-  V[["same"]] <- 0
-  V[["smlr"]] <- asc_smlr +
-    b_City_Midwest_smlr * (City == 2) +
-    b_City_South_smlr * (City == 3) +
-    b_City_Northeast_smlr * (City == 4)  +
-    b_Age_Millenials_smlr * (Age == 2) +
-    b_Age_GenX_smlr * (Age == 3) +
-    b_Age_Older_smlr * (Age == 4)  +
-    b_Inc_Mid_smlr * (Inc == 2)  +
-    b_Inc_High_smlr * (Inc == 3) +
-    b_Vpp_Sufficient_smlr * (Vpp == 2) +
-    b_Edc_MoreBachelor_smlr * (Edc == 2) +
-    b_Gen_NonFemale_smlr * (Gen == 2)  +
-    b_Ngh_NonUrban_smlr * (Ngh == 2) +
-    b_Rac_Other_smlr * (Rac == 2)
-  V[["grtr"]] <- asc_grtr +
-    b_City_Midwest_grtr * (City == 2) +
-    b_City_South_grtr * (City == 3) +
-    b_City_Northeast_grtr *(City == 4)  +
-    b_Age_Millenials_grtr * (Age == 2) +
-    b_Age_GenX_grtr * (Age == 3) +
-    b_Age_Older_grtr * (Age == 4)  +
-    b_Inc_Mid_grtr * (Inc == 2)  +
-    b_Inc_High_grtr * (Inc == 3) +
-    b_Vpp_Sufficient_grtr * (Vpp == 2) +
-    b_Edc_MoreBachelor_grtr * (Edc == 2) +
-    b_Gen_NonFemale_grtr * (Gen == 2)  +
-    b_Ngh_NonUrban_grtr * (Ngh == 2) +
-    b_Rac_Other_grtr * (Rac == 2)
-  
-  mnl_settings <- list(
-    alternatives = c(smlr = 1, same = 2, grtr = 3),
-    avail = 1,
-    choiceVar = future,
-    V = V
-  )
-  
-  P[["model"]] <- apollo_mnl(mnl_settings, functionality)
-  
-  P <- apollo_prepareProb(P, apollo_inputs, functionality)
-  return(P)
-}
-
-model <- apollo_estimate(apollo_beta, apollo_fixed, apollo_probabilities, apollo_inputs)
-
-apollo_modelOutput(model)
-apollo_saveOutput(model)
-sink(paste(model$apollo_control$modelName, "_additional_output.txt", sep = ""), split = TRUE)
-if (sink.number() > 0) sink()
+database = database %>% mutate_at(
+  c(nameBase, "biz_all", "City", "Age", "Inc", "Hel", "Edc", "Vdc", "Rem", "Chl", "Gen", "Ngh", "Rac", "T19"), as.numeric
+) %>%
+  filter(.[,"biz_all"] %>% complete.cases)
 ```

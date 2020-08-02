@@ -1,0 +1,89 @@
+Model run using Apollo for R, version 0.1.0 
+www.ApolloChoiceModelling.com
+
+Model name                       : mnl_all_3_ms
+Model description                : MNL with Factor Analysis
+Model run at                     : 2020-08-01 16:05:02
+Estimation method                : bfgs
+Model diagnosis                  : successful convergence 
+Number of individuals            : 1714
+Number of observations           : 1714
+
+Number of cores used             :  1 
+Model without mixing
+
+LL(start)                        : -1883.021
+LL(0)                            : -1883.021
+LL(final)                        : -1838.757
+Rho-square (0)                   :  0.0235 
+Adj.Rho-square (0)               :  0.0224 
+AIC                              :  3681.51 
+BIC                              :  3692.41 
+Estimated parameters             :  2
+Time taken (hh:mm:ss)            :  00:00:8.49 
+Iterations                       :  9 
+Min abs eigenvalue of hessian    :  190.4041 
+
+Estimates:
+           Estimate Std.err. t.ratio(0) Rob.std.err. Rob.t.ratio(0)
+b_asc_same   0.0881   0.0551       1.60       0.0551           1.60
+b_asc_grtr  -0.4643   0.0641      -7.24       0.0641          -7.24
+
+Overview of choices for model component "MNL"
+                                    smlr    same   grtr
+Times available                  1714.00 1714.00 1714.0
+Times chosen                      630.00  688.00  396.0
+Percentage chosen overall          36.76   40.14   23.1
+Percentage chosen when available   36.76   40.14   23.1
+
+WARNING: Availability not provided to 'apollo_mnl' (or some elements are NA).
+         Full availability assumed.
+
+
+Classical covariance matrix:
+           b_asc_same b_asc_grtr
+b_asc_same     0.0030     0.0016
+b_asc_grtr     0.0016     0.0041
+
+Robust covariance matrix:
+           b_asc_same b_asc_grtr
+b_asc_same     0.0030     0.0016
+b_asc_grtr     0.0016     0.0041
+
+Classical correlation matrix:
+           b_asc_same b_asc_grtr
+b_asc_same     1.0000     0.4489
+b_asc_grtr     0.4489     1.0000
+
+Robust correlation matrix:
+           b_asc_same b_asc_grtr
+b_asc_same     1.0000     0.4489
+b_asc_grtr     0.4489     1.0000
+
+ 20 worst outliers in terms of lowest average per choice prediction:
+ row Avg prob per choice
+   5           0.2310387
+  11           0.2310387
+  21           0.2310387
+  37           0.2310387
+  43           0.2310387
+  47           0.2310387
+  48           0.2310387
+  64           0.2310387
+  72           0.2310387
+  74           0.2310387
+  75           0.2310387
+  77           0.2310387
+  81           0.2310387
+  86           0.2310387
+  93           0.2310387
+  95           0.2310387
+ 101           0.2310387
+ 105           0.2310387
+ 107           0.2310387
+ 109           0.2310387
+
+Changes in parameter estimates from starting values:
+           Initial Estimate Difference
+b_asc_same       0   0.0881     0.0881
+b_asc_grtr       0  -0.4643    -0.4643
