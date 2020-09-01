@@ -3,3 +3,8 @@
 .RData
 .Ruserdata
 src/data
+
+
+**/*.html
+**/*.pptx
+**/*.png

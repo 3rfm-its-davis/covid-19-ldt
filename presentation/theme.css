@@ -1,0 +1,100 @@
+/* @theme test */
+
+@import "default";
+
+section {
+  font-family: "Calibri";
+  font-size: 40px;
+  padding: 40px;
+}
+
+section.title {
+  padding: 40px;
+  background-image: url(title.png);
+}
+
+section.title h1,
+section.title h2,
+section.title h3 {
+  margin: 0;
+}
+
+section.title h1 {
+  font-size: 44px;
+  color: #002855;
+  text-align: right;
+  position: absolute;
+  top: 39%;
+  right: 3%;
+}
+
+section.title h2 {
+  font-size: 40px;
+  color: #002855;
+  text-align: left;
+  position: relative;
+  top: 15%;
+}
+
+section.title h2:first-of-type {
+  font-size: 40px;
+  color: #cc9900;
+  text-align: right;
+  top: 12.5%;
+}
+
+section.title h3 {
+  font-size: 25px;
+  color: #002855;
+  text-align: left;
+  position: relative;
+  top: 20%;
+}
+
+section.title h3:first-of-type {
+  font-size: 25px;
+  color: #cc9900;
+  font-style: italic;
+}
+
+section.slides {
+  color: #1f497d;
+  background-image: url(slides.png);
+}
+
+section.slides h1:first-of-type {
+  font-size: 50px;
+  padding: 12px;
+  margin: 0px -12px;
+  width: 1224px;
+  border-bottom: #cc9900 3px solid;
+  position: absolute;
+  top: 0px;
+}
+
+section.slides ul {
+  margin-left: -24px;
+}
+
+ul ul li {
+  font-size: 36px;
+  line-height: 36px;
+}
+ul ul ul li {
+  font-size: 32px;
+  margin-top: 4px;
+  line-height: 32px;
+}
+
+code {
+  font-size: 28px;
+}
+
+section.slides table {
+  font-size: 28px;
+}
+
+section.plain {
+  font-size: 72px;
+  text-align: center;
+}
