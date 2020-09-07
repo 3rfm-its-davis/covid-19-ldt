@@ -1,8 +1,10 @@
 setwd(paste(here::here(), "/src/dist", sep = ""))
 
-apollo_control <- list(modelName = "mnl_all_3",
-                       modelDescr = "MNL with Factor Analysis",
-                       indivID = "ID")
+apollo_control <- list(
+  modelName = "mnl_all_3",
+  modelDescr = "MNL with Factor Analysis",
+  indivID = "ID"
+)
 
 choiceAnalysis_settings <- list(
   alternatives = c(
@@ -12,13 +14,17 @@ choiceAnalysis_settings <- list(
   ),
   avail = 1,
   choiceVar = database$biz_all,
-  explanators = database[, c("City", "Age", "Inc", "Hel", "Edc", "Vdc", "Chl", "Gen", "Ngh", "Rac", "T19")]
+  explanators = database[, c(
+    "City", "Age", "Inc", "Hel",
+    "Edc", "Vdc", "Chl", "Gen",
+    "Ngh", "Rac", "T19"
+  )]
 )
 
 apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
 
-alts = c("same", "grtr")
-vars = c(
+alts <- c("same", "grtr")
+vars <- c(
   "asc",
   "City_Midwest",
   "City_South",
@@ -36,34 +42,34 @@ vars = c(
   "Ngh_NonUrban"
 )
 
-nameVec = alts %>% map( ~ {
-  paste("b_", vars, "_", .x, sep = "")
-}) %>% unlist
+nameVec <- alts %>%
+  map(~ {
+    paste("b_", vars, "_", .x, sep = "")
+  }) %>%
+  unlist()
 
 apollo_beta <- rep(0, length(nameVec))
-names(apollo_beta) = nameVec
+names(apollo_beta) <- nameVec
 
-apollo_fixed = c()
+apollo_fixed <- c()
 
 apollo_choiceAnalysis(choiceAnalysis_settings, apollo_control, database)
 
 apollo_inputs <- apollo_validateInputs()
 
 apollo_probabilities <-
-  function(apollo_beta,
-           apollo_inputs,
-           functionality = "estimate") {
+  function(apollo_beta, apollo_inputs, functionality = "estimate") {
     apollo_attach(apollo_beta, apollo_inputs)
     on.exit(apollo_detach(apollo_beta, apollo_inputs))
-    
+
     P <- list()
-    
+
     V <- list()
     V[["smlr"]] <- 0
-    
+
     for (i in alts) {
-      varList = paste("b_", vars, "_", i, sep = "")
-      V[[i]] = 
+      varList <- paste("b_", vars, "_", i, sep = "")
+      V[[i]] <-
         get(varList[1]) +
         get(varList[2]) * (City == 2) +
         get(varList[3]) * (City == 3) +
@@ -80,7 +86,7 @@ apollo_probabilities <-
         get(varList[14]) * (Chl == 2) +
         get(varList[15]) * (Ngh == 2)
     }
-    
+
     mnl_settings <- list(
       alternatives = c(
         smlr = 1,
@@ -91,18 +97,20 @@ apollo_probabilities <-
       choiceVar = biz_all,
       V = V
     )
-    
+
     P[["model"]] <- apollo_mnl(mnl_settings, functionality)
-    
+
     P <- apollo_prepareProb(P, apollo_inputs, functionality)
     return(P)
   }
 
 model <-
-  apollo_estimate(apollo_beta,
-                  apollo_fixed,
-                  apollo_probabilities,
-                  apollo_inputs)
+  apollo_estimate(
+    apollo_beta,
+    apollo_fixed,
+    apollo_probabilities,
+    apollo_inputs
+  )
 
 apollo_modelOutput(model)
 apollo_saveOutput(model)
@@ -111,6 +119,8 @@ sink(paste(
   "_additional_output.txt",
   sep = ""
 ),
-split = TRUE)
-if (sink.number() > 0)
+split = TRUE
+)
+if (sink.number() > 0) {
   sink()
+}

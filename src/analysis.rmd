@@ -14,6 +14,7 @@ library(MASS)
 library(apollo)
 library(tidyverse)
 library(fastDummies)
+setwd(paste(here::here(), "/src", sep = ""))
 
 source("./importData.r")
 source("./selectColumns.r")
@@ -32,9 +33,7 @@ nameBase = c(
 raw = importData("covidV2") %>%
   filter(City != "Vancouver" & City != "Toronto") %>%
   filter(C04_1 == 1 | C04_2 == 1 | C04_3 == 1 | C04_8 == 1 | C04_9 == 1)
-```
-
-```{r fig.width=12, fig.height=8}
+  
 before = raw %>% selectColumns(
   c(
     "ResponseId",
@@ -71,15 +70,21 @@ joinedRaw[joinedRaw < 0] = NA
 joinedRaw[joinedRaw > 100] = NA
 joinedRaw = joinedRaw %>% mutate(ResponseId = ids)
 
-joinedRaw %>%
-  gather(key,value, -"ResponseId") %>%
-  ggplot() + geom_histogram(aes(x = value), binwidth = 1) +
-  facet_wrap(~key)
+# joinedRaw %>%
+#   gather(key,value, -"ResponseId") %>%
+#   ggplot() + geom_histogram(aes(x = value), binwidth = 1) +
+#   facet_wrap(~key)
 
 joinedRaw = joinedRaw %>% rowwise(ResponseId) %>% mutate(
-  biz_all_before = sum(biz_car_before, biz_air_before, biz_oth_before),
-  biz_all_during = sum(biz_car_during, biz_air_during, biz_oth_during)
+  biz_all_before = sum(biz_car_before, biz_air_before, biz_oth_before, na.rm = T),
+  biz_all_during = sum(biz_car_during, biz_air_during, biz_oth_during, na.rm = T)
 ) %>% as.data.frame()
+
+index = (joinedRaw[,"biz_all_during"] + joinedRaw[,"biz_all_before"]) > 0
+diff = data.frame(x = (joinedRaw[,"biz_all_during"] - joinedRaw[,"biz_all_before"] / 6)[index])
+ggplot(diff) + geom_histogram(aes(x = x), binwidth = 0.5, fill = "#9999FF") + theme_bw() +
+labs(x = "Difference (2020 - 2019/6)", y = "Count") + xlim(-25, 25) + geom_vline(xintercept = 0, alpha = 0.3)
+ggsave("../presentation/histogram.png", width = 8, height = 5)
 
 joined = data.frame(joinedRaw[,"ResponseId"])
 

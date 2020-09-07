@@ -2,9 +2,10 @@
 .Rhistory
 .RData
 .Ruserdata
+
+renv/library
 src/data
 
-
-**/*.html
-**/*.pptx
 **/*.png
+presentation/presentation.*
+presentation/presentation.*

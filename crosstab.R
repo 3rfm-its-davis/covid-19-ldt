@@ -92,3 +92,5 @@ c("Age", "Inc", "Edc", "Gen", "Hsp", "Raa", "Rab", "Ran", "Raw", "Rao", "Emp") %
   colnames(table)[1] = "Total"
   table
 })
+
+
