@@ -33,14 +33,14 @@ section.title h2 {
   color: #002855;
   text-align: left;
   position: relative;
-  top: 15%;
+  top: 20%;
 }
 
 section.title h2:first-of-type {
   font-size: 40px;
   color: #cc9900;
   text-align: right;
-  top: 12.5%;
+  top: 15%;
 }
 
 section.title h3 {
@@ -48,7 +48,7 @@ section.title h3 {
   color: #002855;
   text-align: left;
   position: relative;
-  top: 20%;
+  top: 24%;
 }
 
 section.title h3:first-of-type {
@@ -74,6 +74,7 @@ section.slides h1:first-of-type {
 
 section.slides ul {
   margin-left: -24px;
+  margin-bottom: -12px;
 }
 
 ul ul li {
@@ -92,10 +93,33 @@ code {
 }
 
 section.slides table {
+  width: 100%;
+  margin-top: 24px;
+  display: table;
   font-size: 28px;
+  line-height: 130%;
+}
+
+section.slides tr > th:nth-last-child(-n + 2) {
+  width: 180px;
+}
+
+section.slides .header {
+  position: absolute;
+  top: 112px;
+  right: 84px;
+  font-size: 28px;
+  font-weight: 900;
 }
 
 section.slides .footer {
+  position: absolute;
+  bottom: 80px;
+  font-size: 16px;
+  line-height: 18px;
+}
+
+section.slides .footer-multiple {
   position: absolute;
   bottom: 64px;
   font-size: 16px;
@@ -123,4 +147,118 @@ section.slides .minus {
 section.plain {
   font-size: 72px;
   text-align: center;
+}
+
+section.data > ul > li {
+  width: 60%;
+}
+
+section.data ul > li {
+  font-size: 0.7rem;
+  line-height: 0.8rem;
+}
+
+section.data ul > li > ul > li {
+  font-size: 0.6rem;
+  line-height: 0.7rem;
+}
+
+section ul {
+  padding-left: 1.6rem;
+}
+
+section.data img {
+  width: 480px;
+  position: absolute;
+  top: 35%;
+  left: 60%;
+}
+
+.footer-right {
+  font-size: 20px !important;
+  bottom: 170px !important;
+  right: 50px;
+  text-align: right;
+}
+
+section.list > div {
+  display: flex;
+}
+
+section.list > div > ul {
+  margin: 0 1.6rem 0 0;
+  max-width: 45%;
+  line-height: 1.2rem;
+}
+
+section.list > div > ul > li {
+  margin: 1rem 0;
+}
+
+section.list > div > ul > li > ul > li:first-child {
+  margin: 0.2rem 0 0 0;
+}
+
+section.list2 ul > li {
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
+section.list2 ul > li > ul > li {
+  font-size: 0.7rem;
+  line-height: 0.8rem;
+}
+
+section.list2 > ul > li > ul > li:last-child {
+  margin: 0 0 0.6rem 0;
+}
+section.list3 ul > li {
+  font-size: 0.9rem;
+  line-height: 1.1rem;
+}
+
+section.list3 ul > li > ul > li {
+  font-size: 0.8rem;
+  line-height: 0.9rem;
+}
+
+section.data > ul > li > ul > li:last-child,
+section.list3 > ul > li > ul > li:last-child {
+  margin: 0 0 0.6rem 0;
+}
+
+em,
+strong {
+  color: #cc4400;
+}
+
+section.plain div {
+  font-size: 32px;
+  color: #002855;
+}
+
+section.plain span {
+  color: #002855;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 144px;
+  font-size: 28px;
+}
+
+section.plain img {
+  opacity: 60%;
+  width: 7.5%;
+  position: absolute;
+  bottom: 32px;
+  font-size: 28px;
+}
+
+section.plain img:first-child {
+  left: 312px;
+}
+
+section.plain img:last-child {
+  right: 440px;
 }

@@ -81,7 +81,7 @@ joinedRaw = joinedRaw %>% rowwise(ResponseId) %>% mutate(
 ) %>% as.data.frame()
 
 index = (joinedRaw[,"biz_all_during"] + joinedRaw[,"biz_all_before"]) > 0
-diff = data.frame(x = (joinedRaw[,"biz_all_during"] - joinedRaw[,"biz_all_before"] / 6)[index])
+diff = data.frame(x = (joinedRaw[,"biz_all_before"] / 6 - joinedRaw[,"biz_all_during"])[index])
 ggplot(diff) + geom_histogram(aes(x = x), binwidth = 0.5, fill = "#9999FF") + theme_bw() +
 labs(x = "Difference (2020 - 2019/6)", y = "Count") + xlim(-25, 25) + geom_vline(xintercept = 0, alpha = 0.3)
 ggsave("../presentation/histogram.png", width = 8, height = 5)
