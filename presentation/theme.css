@@ -101,12 +101,12 @@ section.slides table {
 }
 
 section.slides tr > th:nth-last-child(-n + 2) {
-  width: 180px;
+  width: 220px;
 }
 
 section.slides .header {
   position: absolute;
-  top: 112px;
+  top: 108px;
   right: 84px;
   font-size: 28px;
   font-weight: 900;
@@ -187,7 +187,7 @@ section.list > div {
 
 section.list > div > ul {
   margin: 0 1.6rem 0 0;
-  max-width: 45%;
+  max-width: 48%;
   line-height: 1.2rem;
 }
 
@@ -220,6 +220,7 @@ section.list3 ul > li {
 section.list3 ul > li > ul > li {
   font-size: 0.8rem;
   line-height: 0.9rem;
+  margin-top: 0;
 }
 
 section.data > ul > li > ul > li:last-child,
@@ -261,4 +262,23 @@ section.plain img:first-child {
 
 section.plain img:last-child {
   right: 440px;
+}
+
+section:after {
+  position: absolute;
+  left: 640px;
+  color: #002855;
+  opacity: 0.6;
+}
+
+section.acknowledgments img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+section.plain:after,
+section.acknowledgments:after {
+  display: none;
 }

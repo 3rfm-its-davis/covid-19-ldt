@@ -5,6 +5,7 @@ theme: test
 
 <!--
 _class: title
+paginate: true
 -->
 
 # The Impact of the COVID-19 Pandemic on Long-distance Travel
@@ -22,7 +23,7 @@ _class: title
 <!--
 Hello everyone, this is Keita Makino from 3 Revolutions Future Mobility.
 
-Today I'd like to give a quick review on the changes of long-distance travels due to the COVID-19 pandemic, which Grant has already given the overview about in the first presentation.
+Today I'd like to give a quick review on the changes of long-distance travel due to the COVID-19 pandemic, which Grant has already given the overview about in the first presentation.
 
 -->
 
@@ -85,7 +86,7 @@ _class: slides data
 - Online survey in Qualtrics.com (open May-July 2020)
 - Total sample size of 10,958 (as of July 7th, in the US and Canada)
 - More information on postcovid19mobility.ucdavis.edu
-- Multinomial-logit model with dataset O
+- Multinomial-logit model with _active workers in dataset O_
 
 ![100%](./us.png)
 
@@ -94,21 +95,21 @@ _class: slides data
 <!--
 As Grant has introduced in the first presentation, we have launched a series of online surveys from May to July. Three types of datasets, longitudinal, opinion panel, and convenience sample, were collected and in this study we use the opinion panel data.
 
-The survey was hosted online through Qualtrics platform and we collected approximately 11 thousands of the responses. Please visit the website for more details.
+The survey was hosted online through Qualtrics platform and we collected approximately 11 thousand of the responses. Please visit the website for more details.
 
 In this study, using the dataset O, we applied a multinomial-logit model to evaluate the influential factors that have determined the changes in LD travels.
 -->
 
 ---
 
-# Model 1 - Current
+# Model 1 - Current Behavior
 
-Dependent Variable: Change in LD travel frequency during COVID-19
+Dependent Variable: Change in _work-related_ LD trips during COVID-19
 
 - Three-level dependent variable
-  - If traveled more times in 2020, _"more"_
-  - If traveled fewer times in 2020, _"fewer"_
-  - Otherwise, _"same"_
+  - If traveled more times in 2020, _"more LD trips"_
+  - If traveled fewer times in 2020, _"fewer LD trips"_
+  - Otherwise, _"same LD trips"_
 
 <!--
 The first model we introduce here is the estimation of current LD travel, compared to that of the last year. The dependent variable is three-level behavioral change, either the survey participant has had a fewer, more, or about the same number of LS trips in the COVID-19 pandemic.
@@ -127,20 +128,20 @@ _class: slides list
 <div>
 
 - Age
-  - Generation Z: born 1996 -
-  - Millennials: born 1981 - 1995
-  - Generation X: born 1966 - 1980
-  - Older: born - 1965
+  - Generation Z: 1996 or later
+  - Millennials: 1981 - 1995
+  - Generation X: 1966 - 1980
+  - Older: 1965 or earlier
 - Gender
   - Male
-  - non-male (female / non-binary)
+  - Non-male (female/non-binary)
 
 <span></span>
 
 - Income (USD)
-  - Low: - 49,999
-  - Medium: 50,000 - 99,999
-  - High: 100,000 -
+  - Low: \$49,999 or less
+  - Medium: $50,000 - $99,999
+  - High: \$100,000 or more
 - Education
   - Less than bachelor
   - Bachelor or more
@@ -161,8 +162,8 @@ _class: slides list
 
 <div>
 
-- Concern about health impacts of the pandemic in the country
-- Video conferencing seen as a replacement of LD trips
+- Concern of health impacts of the pandemic in the country \*
+- Video conferencing seen as a replacement of LD trips \*
 - Presence of child(ren)
 
 <span></span>
@@ -178,6 +179,8 @@ _class: slides list
 
 </div>
 
+<div class="footer">*: treated as numeric variable</div>
+
 <!--
 Also, we have included two attitudinal variables in the logit model. First is based on the question asking how much was the survey participant worried about the health issues in the country, the United States. The second one is their degree of approval toward the idea that the video conferencing, like this zoom call, would effectively replace some of the LD travel. The response for the two questions was in a Likert scale and we have treated it as a numeric variable.
 
@@ -188,9 +191,9 @@ The other things included in the model were; the presence of children, yes or no
 
 # Model 1 Estimation Results (1)
 
-<div class="header">Base alternative: Fewer</div>
+<div class="header">Base alternative: Fewer LD trips</div>
 
-| Variable                            | Option           | Same                       | More                       |
+| Variable                            | Option           | Same LD trips              | More LD trips              |
 | ----------------------------------- | ---------------- | -------------------------- | -------------------------- |
 | Age (Ref: Generation X)             | Generation Z     |                            | <div class="plus">+</div>  |
 |                                     | Millennials      |                            | <div class="plus">+</div>  |
@@ -210,17 +213,17 @@ Here, age, gender, education, income, all of them are somehow identified as a si
 
 # Model 1 Estimation Results (2)
 
-<div class="header">Base alternative: Fewer</div>
+<div class="header">Base alternative: Fewer LD trips</div>
 
-| Variable                       | Option    | Same | More                       |
-| ------------------------------ | --------- | ---- | -------------------------- |
-| Presence of children (Ref: No) | Yes       |      | <div class="plus">+</div>  |
-| Health concern                 | -         |      | <div class="minus">-</div> |
-| Video conferencing             | -         |      | <div class="plus">+</div>  |
-| Neighborhood (Ref: Urban)      | Non-Urban |      | <div class="minus">-</div> |
-| Region (Ref: US West)          | Midwest   |      |                            |
-|                                | South     |      |                            |
-|                                | Northeast |      |                            |
+| Variable                       | Option    | Same LD trips | More LD trips              |
+| ------------------------------ | --------- | ------------- | -------------------------- |
+| Presence of children (Ref: No) | Yes       |               | <div class="plus">+</div>  |
+| Health concern                 | -         |               | <div class="minus">-</div> |
+| Video conferencing             | -         |               | <div class="plus">+</div>  |
+| Neighborhood (Ref: Urban)      | Non-Urban |               | <div class="minus">-</div> |
+| Region (Ref: US West)          | Midwest   |               |                            |
+|                                | South     |               |                            |
+|                                | Northeast |               |                            |
 
 <!--
 In this continuous list, the presence of children, health concern, attitude toward video conferencing as a replacement of LD travels, and the neighborhood type were identified as a significant factor. Interstingly, the region factor was not significant in our first model, which implies, even though the pandemic situation varied across the several U.S. regions, people in the country overall shared the direction of the change in the LD-travel behavior.
@@ -235,16 +238,15 @@ _class: slides list2
 # Findings from Model 1
 
 - _Younger generations_ tend to travel more
-  - They may be in a position that needs more LD travels
+  - They may be in a position that needs more LD trips
 - _Non-male workers_ are less likely to travel more
-- _Lower-income workers_ may have more travels in 2020
-  - Higher-income jobs could be switched to remote work
-  - More educated workers also can switch to teleworking
-- _Presence of children_ associates with more travels
-- _Attitude to video conferencing_ may reflect LD travel behavior
-  - They might be unsatisfied with the current environment
-- _Non-urban habitats_ would not travel more
-  - They don't really have to make LD travels
+- _Lower-income workers_ tend to have more LD trips in 2020
+  - Higher-income workers are more flexible to adjust/cancel their LD travel
+  - More educated workers replace LD trips with virtual alternatives
+- _Presence of children_ associates with more LD trips
+  - This might be a proxy for a later stage in life
+- _Workers who live in non-urban areas_ are less likely to make more LD trips in 2020
+  - The decline in the work-related trips in such areas
 
 <!--
 So here's the summary of the summary. First, younger generations tend to travel more in 2020. This might be because they are in a position in a company which demands them to make LD travels regardless of their health concern or willingness.
@@ -262,13 +264,13 @@ Finally, people in a suburban and rural area are less likely to travel more in 2
 
 ---
 
-# Model 2 - Future
+# Model 2 - Future Expectations about Long-Distance Travel
 
-Dependent Variable: Expectation for future LD trips
+Dependent Variable: Expectation for future _work-related_ LD trips
 
 - Expectation for LD trips frequency in **October 2020**
 - Comparing to **now** (when the survey was taken)
-- 5-scale options (much less often - much more often)
+- 5-scale options (much less often - much more often) -> 3 levels
 - Additional explanatory variables to Model 1
   - Race (white or other)
   - Current practice of remote working (yes or no)
@@ -281,7 +283,7 @@ The next model we like to introduce here is the model for future travel behavior
 
 # Model 2 Estimation Results (1)
 
-<div class="header">Base alternative: Same</div>
+<div class="header">Base alternative: Same Frequency of LD trips</div>
 
 | Variable                            | Option           | Less Often | More Often                 |
 | ----------------------------------- | ---------------- | ---------- | -------------------------- |
@@ -302,7 +304,7 @@ The result is shown here. Among the social demographic factors, only the income 
 
 # Model 2 Estimation Results (1)
 
-<div class="header">Base alternative: Same</div>
+<div class="header">Base alternative:  Same Frequency of LD trips</div>
 
 | Variable                       | Option    | Less Often                 | More Often                 |
 | ------------------------------ | --------- | -------------------------- | -------------------------- |
@@ -330,25 +332,22 @@ _class: slides list2
 - _Younger generations_ expect to travel more often
   - Older people would be still concerned about health risks
 - _Non-male workers_ are less likely to travel more
-  - Also by the health concern?
-- _Educated-workers_ would see more LD travels
+- _Educated-workers_ would see more LD trips
   - Potentially because most of them are currently remote-working
-- _Presence of children_ associates with both direction
-  - They are just "uncertain"
-- _People with health concern_ seems to consist of two types of workers
+- _Presence of children_ and
+  _People with health concern_ seems to consist of two types of workers
   - One is "optimistic", who believe there will be a good remedy soon
   - The other is "pessimistic", who consider the LD travel will be inactive for long
+- _Current remote workers_ expect to start traveling long-distance again soon
 
 <!--
 Here's the main findings.  First, despite that younger people are currently traveling more frequently than they did in 2019, they still expect their number of LD trips increased in the short-term future. This could be because of their work position, income or life-stage change or so on. On the other hand, older people than the generation X did not show inclination towards LD trips in the short-term future. This might be because of the health risks around them.
 
-Non-male workers showed a negative sign for the more category, showing that they do not consider their LD travel behavior resume in October 2020. This could account for the higher awareness of the health risks of women.
+Non-male workers showed a negative sign for the more category, showing that they do not consider their LD travel behavior resume in October 2020.
 
-Educated workers are supposed to remotely work at this point, and most of them seem to expect to get back to office once the pandemic has run off.
+Educated workers are supposed to remotely work at this point, and most of them seem to expect to resume their LD trips soon.
 
-Presence of children shows the positive sign for the both direction. Which implies that the cohort is somehow unstable at present and uncertain about the future.
-
-The health concern in the country again shows a positive sign to both direction. This could be explained by that there are two types of people among those who have such a concern. One is those who believe that the situation will get enough better soon to make LD trips. The other is more pessimistic about the future.
+Presence of children shows and the health concern in the country shows a positive sign to both direction. This could be explained by that there are two types of people among the cohorts. One is those who believe that the situation will get enough better soon to make LD trips. The other is more pessimistic about the future.
 -->
 
 ---
@@ -359,26 +358,43 @@ The health concern in the country again shows a positive sign to both direction.
 _class: slides list3
 -->
 
-- COVID-19 has altered the LD-travel behavior _heterogeneously_
-  - At least in the 15 metropolitan areas United States
-- Younger and low-income workers may have to keep traveling (or even more)
-- Many workers have gone remote-working _if it's feasible_
+- COVID-19 has altered the LD-travel behavior _with heterogeneous effects_
+  - At least in the 15 US metropolitan areas investigated in this study
+- Younger and low-income workers may have to keep traveling
+  - Many workers have gone remote-working _if it's feasible_
   - Most of them anticipate that the behavior is not permanent
-- People with a health concern are not homogeneous
-  - Some expect it gets better soon, some others anticipate a worse scenario
+  - May need attention regarding an equity perspective
+- Substitution effect was not captured in this study
+  - While LD-air travel significantly declined, LD-car travel had some resilience
 - Longitudinal analysis and/or qualitative interview will complement the study
 
 <!--
 Wrapping up the discussion. By using our online survey regarding the change in travel behavior during COVID-19, we have made two analyses with a multinomial logit model. One compares the past and current behavior. The other compares the current behavior and expectation for the future. As a result, we have found out that the impact of COVID-19 is heterogeneous over the different groups of the society. First, younger and low-income workers may have to keep traveling, or even more, during the pandemic, possibly because of their work position, life stage and so on.
 
-On the other hand, people who "can" remote work went remote-working during the pandemic. This cohort includes higher-income and/or older workers for instance. However, those who are remote-working anticipate that the behavior is not permanent and will go back to normal soon.
+On the other hand, people who "can" remote work went remote-working during the pandemic. This cohort includes higher-income and/or older workers for instance. However, those who are remote-working anticipate that the behavior is not permanent and will go back to normal soon. These finding may lead to raising an equity issue in the industry of the long-distance travel and working environments.
 
-The group with a health concern due to the pandemic seems to consists two types of people. One is optimistic and the other is pessimistic. To examine the details of the components of those groups, we may need to have a longitudinal study or survey, or qualitative interviews that would reveal the job details, household structures, lifestyles and so on.
+Because we have aggregated all the types of work-related LD trips into one category, the substitution effect was not captured in the study. In the real world, while the air travel has significantly declined, LD trips by car have shown some resiliency. To examine the details of the components of those groups, we may need to have a longitudinal study or survey, or qualitative interviews that would reveal the job details, household structures, lifestyles, and so on.
 -->
 
 ---
 
-![bg auto](./acknowledgements.png)
+<!--
+_class: acknowledgments
+-->
+
+![](./acknowledgements.png)
+
+---
+
+<!--
+_class: slides acknowledgments
+-->
+
+# Research work
+
+![bg contain](./paper.png)
+
+<div class="footer">The paper is under review and available upon request.</div>
 
 ---
 
