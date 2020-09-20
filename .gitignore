@@ -9,3 +9,5 @@ src/data
 **/*.png
 presentation/presentation.*
 presentation/presentation.*
+
+.vscode

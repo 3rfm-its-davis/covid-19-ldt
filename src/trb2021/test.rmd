@@ -1,0 +1,76 @@
+---
+title: "test"
+author: "Keita Makino"
+date: "6/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(ggplot2)
+
+source("./importData.r")
+source("./selectColumns.r")
+```
+
+```{r}
+data = importData("annual") %>% selectColumns(c("D04_1_1","D04_1_2","D04_1_3","D04_2_1","D04_2_2","D04_2_3")) %>% gather() %>% mutate(value = as.numeric(value)) %>% na.exclude() %>% filter(value<=100 & value >=0)
+ggplot(data, aes(value)) + geom_histogram(binwidth = 1) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("covidV1") %>% selectColumns(c("C11.1_1_1","C11.1_1_2","C11.1_1_3","C11.1_2_1","C11.1_2_2","C11.1_2_3")) %>% gather() %>% mutate(value = as.numeric(value)) %>% na.exclude() %>% filter(value<=100 & value >= 0)
+ggplot(data, aes(value)) + geom_histogram(binwidth = 1) + facet_wrap(~key)
+```
+
+
+```{r}
+data = importData("covidV1") %>% selectColumns(c("C11.1_1_1","C11.1_1_2","C11.1_1_3","C11.1_2_1","C11.1_2_2","C11.1_2_3")) %>% gather() %>% mutate(value = as.numeric(value)) %>% na.exclude() %>% filter(value<=100 & value >= 0)
+ggplot(data, aes(value)) + geom_histogram(binwidth = 1) + facet_wrap(~key)
+```
+
+
+```{r}
+annual = importData("annual") %>% selectColumns(c("D04_1_1","D04_1_2","D04_1_3","D04_2_1","D04_2_2","D04_2_3","Q108_3")) %>% na.exclude()
+covid = importData("covidV1") %>% selectColumns(c("C11.2_1_1","C11.2_1_2","C11.2_1_3","C11.2_2_1","C11.2_2_2","C11.2_2_3", "RecipientEmail")) %>% na.exclude()
+joined = inner_join(annual,covid,c("Q108_3" = "RecipientEmail")) %>% select(-Q108_3)
+data = data.frame(key = rep(1:6,each = dim(joined)[1]) %>% as.character)
+for (i in 0:5) {
+  data[(i*dim(joined)[1]+1):((i+1)*dim(joined)[1]),2:3] = joined[,c(1,7)+i]
+}
+colnames(data)[2:3] = c("before", "after")
+data = data %>% mutate(before = as.numeric(before), after = as.numeric(after)) %>% filter(before <= 90 & before >= 0 & after <= 15 & after >= 0) %>% group_by(key, before, after) %>% tally()
+ggplot(data) + geom_point(aes(before,after*6, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("annual") %>% selectColumns(c("D04_1_1","D04_1_2","D04_1_3","D04_2_1","D04_2_2","D04_2_3","S01_1")) %>% gather(,,-S01_1) %>% mutate(value = as.numeric(value), age = 2020 - as.numeric(S01_1)) %>% na.exclude() %>% select(-S01_1) %>% filter(value<=100 & value >=0 & age<=100 & age >=0) %>% group_by(age, key, value) %>% tally()
+ggplot(data) + geom_point(aes(age, value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("covidV1") %>% selectColumns(c("C11.2_1_1","C11.2_1_2","C11.2_1_3","C11.2_2_1","C11.2_2_2","C11.2_2_3","I01_1")) %>% gather(,,-I01_1) %>% mutate(value = as.numeric(value), age = 2020 - as.numeric(I01_1)) %>% na.exclude() %>% select(-I01_1) %>% filter(value<=100 & value >=0 & age<=100 & age >=0) %>% group_by(age, key, value) %>% tally()
+ggplot(data) + geom_point(aes(age,value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("annual") %>% selectColumns(c("D04_1_1","D04_1_2","D04_1_3","D04_2_1","D04_2_2","D04_2_3","S08")) %>% gather(,,-S08) %>% mutate(value = as.numeric(value), deg = as.numeric(S08)) %>% na.exclude() %>% select(-S08) %>% filter(value<=100 & value >=0 & deg<=100 & deg >=0) %>% group_by(deg, key, value) %>% tally()
+ggplot(data) + geom_point(aes(deg,value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("covidV1") %>% selectColumns(c("C11.2_1_1","C11.2_1_2","C11.2_1_3","C11.2_2_1","C11.2_2_2","C11.2_2_3","I07")) %>% gather(,,-I07) %>% mutate(value = as.numeric(value), deg = as.numeric(I07)) %>% na.exclude() %>% select(-I07) %>% filter(value<=100 & value >=0 & deg<=100 & deg >=0) %>% group_by(deg, key, value) %>% tally()
+ggplot(data) + geom_point(aes(deg,value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("annual") %>% selectColumns(c("D04_1_1","D04_1_2","D04_1_3","D04_2_1","D04_2_2","D04_2_3","S10")) %>% gather(,,-S10) %>% mutate(value = as.numeric(value), inc = as.numeric(S10)) %>% na.exclude() %>% select(-S10) %>% filter(value<=100 & value >=0 & inc<=100 & inc >=0) %>% group_by(inc, key, value) %>% tally()
+ggplot(data) + geom_point(aes(inc,value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```
+
+```{r}
+data = importData("covidV1") %>% selectColumns(c("C11.2_1_1","C11.2_1_2","C11.2_1_3","C11.2_2_1","C11.2_2_2","C11.2_2_3","I09")) %>% gather(,,-I09) %>% mutate(value = as.numeric(value), inc = as.numeric(I09)) %>% na.exclude() %>% select(-I09) %>% filter(value<=100 & value >=0 & inc<=100 & inc >=0) %>% group_by(inc, key, value) %>% tally()
+ggplot(data) + geom_point(aes(inc,value, color = key, size = n), alpha = 0.6, position=position_dodge(width = 0.25)) + facet_wrap(~key)
+```

@@ -1,8 +1,0 @@
-{
-  "markdown.marp.themes": [
-    "./presentation/theme.css"
-  ],
-  "markdown.marp.exportType": "pptx",
-  "markdown.marp.enableHtml": true,
-  "markdown.marp.chromePath": "G:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-}
